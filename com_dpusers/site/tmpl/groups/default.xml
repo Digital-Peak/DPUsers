@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="COM_DPUSERS_GROUPS_VIEW_DEFAULT_TITLE" option="COM_DPUSERS_GROUPS_VIEW_DEFAULT_OPTION">
+		<message>
+			<![CDATA[COM_DPUSERS_GROUPS_VIEW_DEFAULT_DESC]]>
+		</message>
+	</layout>
+
+	<fields name="params">
+		<fieldset name="basic">
+			<field name="groups_ids" type="usergrouplist" required="true" multiple="true" layout="joomla.form.field.list-fancy-select"
+				label="COM_DPUSERS_GROUPS_VIEW_PARAMS_IDS_LABEL"/>
+			<field name="groups_header_fields" type="subform" multiple="true" layout="joomla.form.field.subform.repeatable-table"
+				label="COM_DPUSERS_GROUPS_VIEW_PARAMS_HEADER_FIELDS_LABEL" description="COM_DPUSERS_GROUPS_VIEW_PARAMS_HEADER_FIELDS_DESC">
+				<form addfieldprefix="DigitalPeak\Component\DPUsers\Administrator\Field">
+					<field name="field" type="DPUserFields"
+						label="COM_DPUSERS_GROUPS_VIEW_PARAMS_HEADER_FIELDS_FIELD_LABEL"/>
+				</form>
+			</field>
+            <field name="groups_details_layout" type="componentlayout" extension="com_dpusers" view="user" default="default"
+                layout="joomla.form.field.list-fancy-select"
+                label="COM_DPUSERS_GROUPS_VIEW_PARAMS_DETAILS_LAYOUT_LABEL">
+            </field>
+		</fieldset>
+		<fieldset name="user" label="COM_DPUSERS_GROUPS_VIEW_USER_GROUPED_PARAMS_LABEL">
+			<field name="user_grouped_fields" type="subform" multiple="true" showon="groups_details_layout:_:grouped" layout="joomla.form.field.subform.repeatable-table"
+				label="COM_DPUSERS_USER_VIEW_GROUPED_PARAMS_GROUPED_FIELDS_LABEL"
+                description="COM_DPUSERS_USER_VIEW_GROUPED_PARAMS_GROUPED_FIELDS_DESC">
+				<form addfieldprefix="DigitalPeak\Component\DPUsers\Administrator\Field">
+                    <field name="group_ids" type="usergrouplist" required="true" multiple="true" layout="joomla.form.field.list-fancy-select"
+                        label="COM_DPUSERS_USER_VIEW_GROUPED_PARAMS_GROUPED_FIELDS_GROUPS_LABEL"/>
+					<field name="fields" type="DPUserFields" multiple="true" layout="joomla.form.field.list-fancy-select"
+						label="COM_DPUSERS_USER_VIEW_GROUPED_PARAMS_GROUPED_FIELDS_FIELDS_LABEL"/>
+				</form>
+			</field>
+		</fieldset>
+	</fields>
+</metadata>

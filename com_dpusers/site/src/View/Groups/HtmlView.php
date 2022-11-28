@@ -1,0 +1,85 @@
+<?php
+/**
+ * @package   DPUsers
+ * @copyright Copyright (C) 2022 Digital Peak GmbH. <https://www.digital-peak.com>
+ * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL
+ */
+
+namespace DigitalPeak\Component\DPUsers\Site\View\Groups;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use Joomla\Component\Fields\Administrator\Helper\FieldsHelper;
+use Joomla\Registry\Registry;
+
+class HtmlView extends BaseHtmlView
+{
+	protected $state;
+	protected $params;
+	protected $users;
+	protected $canAddUser;
+
+	public function display($tpl = null)
+	{
+		$this->state      = $this->get('State');
+		$this->params     = $this->state->get('parameters.menu', new Registry());
+		$this->users      = $this->get('Items');
+		$this->pagination = $this->get('Pagination');
+		$this->canAddUser = false;
+		$this->headers    = [];
+
+		/** @var User $currentUser */
+		if ($currentUser = $this->state->get('user.current')) {
+			$this->canAddUser = $currentUser->authorise('core.create', 'com_users');
+		}
+
+		foreach ($this->users as $index => $user) {
+			$user->text = '';
+			Factory::getApplication()->triggerEvent('onContentPrepare', ['com_users.user', $user, $user->params, $index]);
+		}
+
+		$fields = FieldsHelper::getFields('com_users.user');
+		foreach ($this->params->get('groups_header_fields', []) as $header) {
+			$label = Text::_('COM_DPUSERS_USER_FIELD_' . $header->field);
+
+			$found = true;
+			if (is_numeric($header->field)) {
+				$found = false;
+				foreach ($fields as $field) {
+					if ($field->id == $header->field) {
+						$label = $field->title;
+						$found = true;
+					}
+				}
+			}
+
+			if (!$found) {
+				continue;
+			}
+
+			$this->headers[] = ['field' => $header->field, 'header' => $label];
+		}
+
+		$this->_prepareDocument();
+
+		parent::display($tpl);
+	}
+
+	private function _prepareDocument()
+	{
+		if ($menu = Factory::getApplication()->getMenu()->getActive()) {
+			$this->params->def('page_heading', $this->params->get('page_title', $menu->title));
+		}
+
+		$this->setDocumentTitle($this->params->get('page_title', ''));
+
+		if ($this->params->get('menu-meta_description')) {
+			$this->document->setDescription($this->params->get('menu-meta_description'));
+		}
+
+		if ($this->params->get('robots')) {
+			$this->document->setMetaData('robots', $this->params->get('robots'));
+		}
+	}
+}

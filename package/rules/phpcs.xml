@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<ruleset name="DPCalendar">
+	<exclude-pattern>*/php-ews/*</exclude-pattern>
+	<exclude-pattern>*/plg_dpcalendar_*/libraries/*</exclude-pattern>
+	<!-- Too deeply nested with all the promises -->
+	<exclude-pattern>*/plg_dpcalendarpay_braintree/resources/js/form.js</exclude-pattern>
+</ruleset>

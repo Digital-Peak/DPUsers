@@ -1,0 +1,15 @@
+{
+    "local": [
+        {
+            "src": "scss/views",
+            "dest": "../media/css/dpusers/views"
+        },
+        {
+            "src": "js/views",
+            "dest": "../media/js/dpusers/views"
+        }
+    ],
+    "config": {
+        "docBlock": "/**\n * @package   DPUsers\n * @copyright Digital Peak GmbH. <https://www.digital-peak.com>\n * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL\n */"
+    }
+}

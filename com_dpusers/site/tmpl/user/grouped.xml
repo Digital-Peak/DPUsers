@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="COM_DPUSERS_USER_VIEW_GROUPED_TITLE" option="COM_DPUSERS_USER_VIEW_GROUPED_OPTION">
+		<message>
+			<![CDATA[COM_DPUSERS_USER_VIEW_GROUPED_DESC]]>
+		</message>
+	</layout>
+
+	<fields name="request">
+		<fieldset name="request">
+			<field name="id" type="user" required="true"
+				label="COM_DPUSERS_USER_VIEW_PARAMS_USER_LABEL"/>
+		</fieldset>
+	</fields>
+    <fields name="params">
+		<fieldset name="basic">
+			<field name="user_grouped_fields" type="subform" multiple="true" layout="joomla.form.field.subform.repeatable-table"
+				label="COM_DPUSERS_USER_VIEW_GROUPED_PARAMS_GROUPED_FIELDS_LABEL"
+                description="COM_DPUSERS_USER_VIEW_GROUPED_PARAMS_GROUPED_FIELDS_DESC">
+				<form addfieldprefix="DigitalPeak\Component\DPUsers\Administrator\Field">
+                    <field name="group_ids" type="usergrouplist" required="true" multiple="true" layout="joomla.form.field.list-fancy-select"
+                        label="COM_DPUSERS_USER_VIEW_GROUPED_PARAMS_GROUPED_FIELDS_GROUPS_LABEL"/>
+					<field name="fields" type="DPUserFields" multiple="true" layout="joomla.form.field.list-fancy-select"
+						label="COM_DPUSERS_USER_VIEW_GROUPED_PARAMS_GROUPED_FIELDS_FIELDS_LABEL"/>
+				</form>
+			</field>
+		</fieldset>
+	</fields>
+</metadata>
