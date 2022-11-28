@@ -15,6 +15,9 @@ defined('_JEXEC') or die;
             </div>
         <?php } ?>
         <?php foreach ($fields as $field) { ?>
+			<?php if ($field->params->get('display', '1') == '0') { ?>
+				<?php continue; ?>
+        	<?php } ?>
             <div class="dp-description dp-description-<?php echo $field->name; ?>">
                 <?php if ($field->params->get('showlabel', 1)) { ?>
                     <div class="dp-description__label">
