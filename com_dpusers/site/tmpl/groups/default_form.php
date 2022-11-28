@@ -7,6 +7,10 @@
 
 defined('_JEXEC') or die;
 
+if (!$this->params->get('groups_show_search', 1)) {
+	return;
+}
+
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 ?>

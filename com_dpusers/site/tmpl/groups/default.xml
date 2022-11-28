@@ -6,31 +6,55 @@
 		</message>
 	</layout>
 
-	<fields name="params">
+	<fields name="params" addfieldprefix="DigitalPeak\Component\DPUsers\Administrator\Field">
 		<fieldset name="basic">
 			<field name="groups_ids" type="usergrouplist" required="true" multiple="true" layout="joomla.form.field.list-fancy-select"
 				label="COM_DPUSERS_GROUPS_VIEW_PARAMS_IDS_LABEL"/>
 			<field name="groups_header_fields" type="subform" multiple="true" layout="joomla.form.field.subform.repeatable-table"
 				label="COM_DPUSERS_GROUPS_VIEW_PARAMS_HEADER_FIELDS_LABEL" description="COM_DPUSERS_GROUPS_VIEW_PARAMS_HEADER_FIELDS_DESC">
-				<form addfieldprefix="DigitalPeak\Component\DPUsers\Administrator\Field">
+				<form>
 					<field name="field" type="DPUserFields"
 						label="COM_DPUSERS_GROUPS_VIEW_PARAMS_HEADER_FIELDS_FIELD_LABEL"/>
 				</form>
 			</field>
             <field name="groups_details_layout" type="componentlayout" extension="com_dpusers" view="user" default="default"
                 layout="joomla.form.field.list-fancy-select"
-                label="COM_DPUSERS_GROUPS_VIEW_PARAMS_DETAILS_LAYOUT_LABEL">
+                label="COM_DPUSERS_GROUPS_VIEW_PARAMS_DETAILS_LAYOUT_LABEL" description="COM_DPUSERS_GROUPS_VIEW_PARAMS_DETAILS_LAYOUT_DESC">
             </field>
+			<field name="groups_show_search" type="radio" default="1" layout="joomla.form.field.radio.switcher"
+				label="COM_DPUSERS_GROUPS_VIEW_PARAMS_SHOW_SEARCH_LABEL" description="COM_DPUSERS_GROUPS_VIEW_PARAMS_SHOW_SEARCH_DESC">
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
 		</fieldset>
 		<fieldset name="user" label="COM_DPUSERS_GROUPS_VIEW_USER_GROUPED_PARAMS_LABEL">
 			<field name="user_grouped_fields" type="subform" multiple="true" showon="groups_details_layout:_:grouped" layout="joomla.form.field.subform.repeatable-table"
 				label="COM_DPUSERS_USER_VIEW_GROUPED_PARAMS_GROUPED_FIELDS_LABEL"
                 description="COM_DPUSERS_USER_VIEW_GROUPED_PARAMS_GROUPED_FIELDS_DESC">
-				<form addfieldprefix="DigitalPeak\Component\DPUsers\Administrator\Field">
+				<form>
                     <field name="group_ids" type="usergrouplist" required="true" multiple="true" layout="joomla.form.field.list-fancy-select"
                         label="COM_DPUSERS_USER_VIEW_GROUPED_PARAMS_GROUPED_FIELDS_GROUPS_LABEL"/>
 					<field name="fields" type="DPUserFields" multiple="true" layout="joomla.form.field.list-fancy-select"
 						label="COM_DPUSERS_USER_VIEW_GROUPED_PARAMS_GROUPED_FIELDS_FIELDS_LABEL"/>
+				</form>
+			</field>
+		</fieldset>
+		<fieldset name="filters" label="COM_DPUSERS_GROUPS_VIEW_PARAMS_FILTERS_LABEL">
+			<field name="groups_custom_field_filters" type="subform" multiple="true" layout="joomla.form.field.subform.repeatable-table"
+				label="COM_DPUSERS_GROUPS_VIEW_PARAMS_CUSTOM_FIELDS_FILTERS_LABEL"
+                description="COM_DPUSERS_GROUPS_VIEW_PARAMS_CUSTOM_FIELDS_FILTERS_DESC">
+				<form>
+					<field name="field" type="DPUserFields" only_fields="true"
+						label="COM_DPUSERS_GROUPS_VIEW_PARAMS_CUSTOM_FIELDS_FILTERS_FIELD_LABEL"/>
+                    <field name="operator" type="list"
+                        label="COM_DPUSERS_GROUPS_VIEW_PARAMS_CUSTOM_FIELDS_FILTERS_VALUE_LABEL">
+						<option value="=">=</option>
+						<option value="&gt;">&gt;</option>
+						<option value="&lt;">&lt;</option>
+						<option value="like">COM_DPUSERS_GROUPS_VIEW_PARAMS_CUSTOM_FIELDS_FILTERS_VALUE_LIKE</option>
+					</field>
+                    <field name="value" type="text"
+                        label="COM_DPUSERS_GROUPS_VIEW_PARAMS_CUSTOM_FIELDS_FILTERS_VALUE_LABEL"/>
 				</form>
 			</field>
 		</fieldset>

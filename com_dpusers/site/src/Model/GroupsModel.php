@@ -82,9 +82,9 @@ class GroupsModel extends ListModel
 
 				// Join to fields
 				$query->join(
-                    'LEFT',
-                    '#__fields_values AS f ON f.item_id = a.id and f.field_id IN (SELECT id FROM #__fields WHERE context = \'com_users.user\')'
-                );
+					'LEFT',
+					'#__fields_values AS f ON f.item_id = a.id and f.field_id IN (SELECT id FROM #__fields WHERE context = \'com_users.user\')'
+				);
 
 				// Add the clauses to the query
 				$query->where(
@@ -97,6 +97,22 @@ class GroupsModel extends ListModel
 					->bind(':username', $search)
 					->bind(':email', $search)
 					->bind(':search', $search);
+			}
+		}
+
+		// Filter for custom field
+		if ($customFields = $this->getState('filter.fields', $this->getState('parameters.menu', new Registry())->get('groups_custom_field_filters'))) {
+			// Join to fields
+			$query->join('RIGHT', '#__fields_values AS ff ON ff.item_id = a.id');
+
+			foreach ($customFields as $search) {
+				$search->operator = in_array($search->operator, ['=', '<', '>', 'like']) ? $search->operator : '=';
+
+				// Add the clauses to the query
+				$query->where(
+					'(' . $db->quoteName('ff.value') . ' ' . $search->operator . ' ' . $db->quote($search->value) .
+					' AND ' . $db->quoteName('ff.field_id') . ' = ' . (int)$search->field . ')'
+				);
 			}
 		}
 

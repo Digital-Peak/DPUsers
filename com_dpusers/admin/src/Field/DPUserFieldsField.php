@@ -20,8 +20,10 @@ class DPUserFieldsField extends ListField
 	{
 		$options = parent::getOptions();
 
-		$options[] = HTMLHelper::_('select.option', 'name', Text::_('COM_DPUSERS_USER_FIELD_NAME'));
-		$options[] = HTMLHelper::_('select.option', 'email', Text::_('COM_DPUSERS_USER_FIELD_EMAIL'));
+		if (empty($this->element['only_fields']) || (string)$this->element['only_fields'] !== 'true') {
+			$options[] = HTMLHelper::_('select.option', 'name', Text::_('COM_DPUSERS_USER_FIELD_NAME'));
+			$options[] = HTMLHelper::_('select.option', 'email', Text::_('COM_DPUSERS_USER_FIELD_EMAIL'));
+		}
 
 		foreach (FieldsHelper::getFields('com_users.user') as $field) {
 			$options[] = HTMLHelper::_('select.option', $field->id, $field->title);
