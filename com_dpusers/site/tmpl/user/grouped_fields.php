@@ -8,25 +8,16 @@
 defined('_JEXEC') or die;
 ?>
 <div class="com-dpusers-user__fields">
-    <?php foreach ($this->groupedFields as $groupId => $fields) { ?>
-        <?php if ($groupId && $fields) { ?>
-            <div class="dp-fieldgroup-title">
-                <?php echo $fields[0]->group_title; ?>
-            </div>
-        <?php } ?>
-        <?php foreach ($fields as $field) { ?>
-			<?php if ($field->params->get('display', '1') == '0') { ?>
-				<?php continue; ?>
-        	<?php } ?>
+    <?php foreach ($this->groups as $group) { ?>
+		<?php if (!array_key_exists($group->id, $this->groupedFields) || !$this->groupedFields[$group->id]) continue; ?>
+        <div class="dp-fieldgroup-title"><?php echo $group->title; ?></div>
+        <?php foreach ($this->groupedFields[$group->id] as $field) { ?>
+			<?php if ($field->params->get('display', '1') == '0') continue; ?>
             <div class="dp-description dp-description-<?php echo $field->name; ?>">
                 <?php if ($field->params->get('showlabel', 1)) { ?>
-                    <div class="dp-description__label">
-                        <?php echo $field->label; ?>:
-                    </div>
+                    <div class="dp-description__label"><?php echo $field->label; ?>:</div>
                 <?php } ?>
-                <div class="dp-description__content">
-                    <?php echo $field->value; ?>
-                </div>
+                <div class="dp-description__content"><?php echo $field->value; ?></div>
             </div>
         <?php } ?>
     <?php } ?>

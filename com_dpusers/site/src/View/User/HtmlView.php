@@ -71,25 +71,31 @@ class HtmlView extends BaseHtmlView
 			$this->permissions->set('can_delete', $this->currentUser->authorise('core.delete', 'com_users'));
 		}
 
-		if (!empty($this->user->jcfields)) {
-			$selectedFields = [];
-			foreach ($this->params->get('user_grouped_fields', []) as $fieldsConfig) {
-				if (!array_intersect($this->currentUser->groups, $fieldsConfig->group_ids)) {
-					continue;
-				}
-				$selectedFields = $fieldsConfig->fields;
+		$model = $app->bootComponent('com_fields')->getMVCFactory()->createModel('Groups', 'Administrator', ['ignore_request' => true]);
+		$model->setState('filter.context', 'com_users.user');
+		$this->groups = $model->getItems() ?: [];
+
+		if (empty($this->user->jcfields)) {
+			return parent::display($tpl);
+		}
+
+		$selectedFields = [];
+		foreach ($this->params->get('user_grouped_fields', []) as $fieldsConfig) {
+			if (!array_intersect($this->currentUser->groups, $fieldsConfig->group_ids)) {
+				continue;
+			}
+			$selectedFields = $fieldsConfig->fields;
+		}
+
+		foreach ($this->user->jcfields as $field) {
+			if ($selectedFields && !in_array($field->id, $selectedFields)) {
+				continue;
 			}
 
-			foreach ($this->user->jcfields as $field) {
-				if ($selectedFields && !in_array($field->id, $selectedFields)) {
-					continue;
-				}
-
-				if (!array_key_exists($field->group_id, $this->groupedFields)) {
-					$this->groupedFields[$field->group_id] = [];
-				}
-				$this->groupedFields[$field->group_id][] = $field;
+			if (!array_key_exists($field->group_id, $this->groupedFields)) {
+				$this->groupedFields[$field->group_id] = [];
 			}
+			$this->groupedFields[$field->group_id][] = $field;
 		}
 
 		parent::display($tpl);
