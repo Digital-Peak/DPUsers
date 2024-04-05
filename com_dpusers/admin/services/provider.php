@@ -21,7 +21,7 @@ use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
 
 return new class () implements ServiceProviderInterface {
-	public function register(Container $container)
+	public function register(Container $container): void
 	{
 		$container->registerServiceProvider(new MVCFactory('\\DigitalPeak\\Component\\DPUsers'));
 		$container->registerServiceProvider(new ComponentDispatcherFactory('\\DigitalPeak\\Component\\DPUsers'));
@@ -29,7 +29,7 @@ return new class () implements ServiceProviderInterface {
 
 		$container->set(
 			ComponentInterface::class,
-			function (Container $container) {
+			static function (Container $container): MVCComponent {
 				$component = new class ($container) extends MVCComponent implements RouterServiceInterface {
 					use RouterServiceTrait;
 

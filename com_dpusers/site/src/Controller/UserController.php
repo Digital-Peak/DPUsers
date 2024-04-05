@@ -44,7 +44,7 @@ class UserController extends FormController
 		return $result;
 	}
 
-	protected function getRedirectToItemAppend($recordId = 0, $urlVar = 'id')
+	protected function getRedirectToItemAppend($recordId = 0, $urlVar = 'id'): string
 	{
 		$tmpl = $this->input->get('tmpl');
 
@@ -60,7 +60,7 @@ class UserController extends FormController
 		}
 
 		if ($return = $this->getReturnPage()) {
-			$append .= '&return=' . base64_encode($return);
+			$append .= '&return=' . base64_encode((string) $return);
 		}
 
 		return $append;
@@ -70,10 +70,10 @@ class UserController extends FormController
 	{
 		$return = $this->input->get('return', null, 'base64');
 
-		if (empty($return) || !Uri::isInternal(base64_decode($return))) {
+		if (empty($return) || !Uri::isInternal(base64_decode((string) $return))) {
 			return Uri::base();
 		}
 
-		return base64_decode($return);
+		return base64_decode((string) $return);
 	}
 }

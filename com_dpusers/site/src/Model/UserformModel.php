@@ -24,8 +24,8 @@ class UserformModel extends UserModel
 		return $form;
 	}
 
-	public function getReturnPage()
+	public function getReturnPage(): string
 	{
-		return base64_encode($this->getState('return_page', ''));
+		return base64_encode((string) $this->getState('return_page', ''));
 	}
 }

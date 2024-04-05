@@ -13,11 +13,13 @@ use Joomla\Registry\Registry;
 
 class HtmlView extends BaseHtmlView
 {
+	public $grouplist;
+	public $groups;
 	protected $params;
 	protected $form;
 	protected $returnPage;
 
-	public function display($tpl = null)
+	public function display($tpl = null): void
 	{
 		PluginHelper::importPlugin('content');
 

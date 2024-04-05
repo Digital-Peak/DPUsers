@@ -15,12 +15,17 @@ use Joomla\Registry\Registry;
 
 class HtmlView extends BaseHtmlView
 {
+	public $pagination;
+	/**
+	 * @var never[]|array<mixed, array<'field'|'header', mixed>>
+	 */
+	public $headers;
 	protected $state;
 	protected $params;
 	protected $users;
 	protected $canAddUser;
 
-	public function display($tpl = null)
+	public function display($tpl = null): void
 	{
 		$this->state      = $this->get('State');
 		$this->params     = $this->state->get('parameters.menu', new Registry());
@@ -66,7 +71,7 @@ class HtmlView extends BaseHtmlView
 		parent::display($tpl);
 	}
 
-	private function _prepareDocument()
+	private function _prepareDocument(): void
 	{
 		if ($menu = Factory::getApplication()->getMenu()->getActive()) {
 			$this->params->def('page_heading', $this->params->get('page_title', $menu->title));

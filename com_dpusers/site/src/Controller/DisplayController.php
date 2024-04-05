@@ -13,7 +13,7 @@ use Joomla\CMS\MVC\Controller\BaseController;
 
 class DisplayController extends BaseController
 {
-	public function display($cachable = false, $urlparams = [])
+	public function display($cachable = false, $urlparams = []): static
 	{
 		if ($this->app->getUserState('com_dpusers.user.data') === null) {
 			$cachable = true;
@@ -72,7 +72,7 @@ class DisplayController extends BaseController
 		}
 
 		if ($return = $this->input->get('return', '', 'base64')) {
-			$model->setState('return_page', base64_decode($return));
+			$model->setState('return_page', base64_decode((string) $return));
 		}
 
 		if ($search = $this->app->getUserStateFromRequest('com_dpusers.filter.search', 'search')) {

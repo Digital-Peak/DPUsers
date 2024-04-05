@@ -19,7 +19,7 @@ use Joomla\Database\DatabaseInterface;
 
 class Router extends RouterView
 {
-	public function __construct(SiteApplication $app, AbstractMenu $menu, ?CategoryFactoryInterface $categoryFactory, DatabaseInterface $db)
+	public function __construct(SiteApplication $app, AbstractMenu $menu)
 	{
 		$groups = new RouterViewConfiguration('groups');
 		$groups->setKey('groups_ids');
@@ -40,22 +40,22 @@ class Router extends RouterView
 		$this->attachRule(new NomenuRules($this));
 	}
 
-	public function getGroupsSegment($id, $query)
+	public function getGroupsSegment($id, $query): array
 	{
 		return [(int) $id => $id];
 	}
 
-	public function getUserSegment($id, $query)
+	public function getUserSegment($id, $query): array
 	{
 		return [(int) $id => $id];
 	}
 
-	public function getFormSegment($id, $query)
+	public function getFormSegment($id, $query): array
 	{
 		return $this->getUserSegment($id, $query);
 	}
 
-	public function getUserId($segment, $query)
+	public function getUserId($segment, $query): int
 	{
 		return (int) $segment;
 	}

@@ -15,6 +15,11 @@ use Joomla\Registry\Registry;
 
 class HtmlView extends BaseHtmlView
 {
+	public $groupedFields;
+	/**
+	 * @var mixed
+	 */
+	public $groups;
 	protected $state;
 	protected $params;
 
@@ -35,7 +40,7 @@ class HtmlView extends BaseHtmlView
 		$this->groupedFields = [];
 
 		$menuItem = $this->state->get('menu.current');
-		if (!$menuItem || (!array_intersect($this->user->groups, $this->params->get('groups_ids', [])) && empty($menuItem->query['id']))) {
+		if (!$menuItem || (array_intersect($this->user->groups, $this->params->get('groups_ids', [])) === [] && empty($menuItem->query['id']))) {
 			throw new \Exception(Text::_('COM_DPUSERS_USER_VIEW_USER_NOT_FOUND'));
 		}
 
@@ -71,6 +76,7 @@ class HtmlView extends BaseHtmlView
 
 		$model = $app->bootComponent('com_fields')->getMVCFactory()->createModel('Groups', 'Administrator', ['ignore_request' => true]);
 		$model->setState('filter.context', 'com_users.user');
+
 		$this->groups = $model->getItems() ?: [];
 
 		if (empty($this->user->jcfields)) {
@@ -79,7 +85,7 @@ class HtmlView extends BaseHtmlView
 
 		$selectedFields = [];
 		foreach ($this->params->get('user_grouped_fields', []) as $fieldsConfig) {
-			if (!array_intersect($this->currentUser->groups, $fieldsConfig->group_ids)) {
+			if (array_intersect($this->currentUser->groups, $fieldsConfig->group_ids) === []) {
 				continue;
 			}
 			$selectedFields = $fieldsConfig->fields;

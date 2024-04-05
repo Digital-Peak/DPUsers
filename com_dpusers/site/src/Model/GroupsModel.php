@@ -69,21 +69,21 @@ class GroupsModel extends ListModel
 
 		// Filter the items over the search string if set
 		if ($search = $this->getState('filter.search')) {
-			if (stripos($search, 'id:') === 0) {
-				$ids = (int) substr($search, 3);
+			if (stripos((string) $search, 'id:') === 0) {
+				$ids = (int) substr((string) $search, 3);
 				$query->where($db->quoteName('a.id') . ' = :id');
 				$query->bind(':id', $ids, ParameterType::INTEGER);
-			} elseif (stripos($search, 'username:') === 0) {
-				$search = '%' . substr($search, 9) . '%';
+			} elseif (stripos((string) $search, 'username:') === 0) {
+				$search = '%' . substr((string) $search, 9) . '%';
 				$query->where($db->quoteName('a.username') . ' LIKE :username');
 				$query->bind(':username', $search);
 			} else {
-				$search = '%' . trim($search) . '%';
+				$search = '%' . trim((string) $search) . '%';
 
 				// Join to fields
 				$query->join(
 					'LEFT',
-					'#__fields_values AS f ON f.item_id = a.id and f.field_id IN (SELECT id FROM #__fields WHERE context = \'com_users.user\')'
+					"#__fields_values AS f ON f.item_id = a.id and f.field_id IN (SELECT id FROM #__fields WHERE context = 'com_users.user')"
 				);
 
 				// Add the clauses to the query
