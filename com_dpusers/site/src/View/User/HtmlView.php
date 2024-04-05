@@ -7,13 +7,11 @@
 
 namespace DigitalPeak\Component\DPUsers\Site\View\User;
 
-use Exception;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Registry\Registry;
-use stdClass;
 
 class HtmlView extends BaseHtmlView
 {
@@ -38,7 +36,7 @@ class HtmlView extends BaseHtmlView
 
 		$menuItem = $this->state->get('menu.current');
 		if (!$menuItem || (!array_intersect($this->user->groups, $this->params->get('groups_ids', [])) && empty($menuItem->query['id']))) {
-			throw new Exception(Text::_('COM_DPUSERS_USER_VIEW_USER_NOT_FOUND'));
+			throw new \Exception(Text::_('COM_DPUSERS_USER_VIEW_USER_NOT_FOUND'));
 		}
 
 		PluginHelper::importPlugin('content');
@@ -47,7 +45,7 @@ class HtmlView extends BaseHtmlView
 		$this->user->text = '';
 		$app->triggerEvent('onContentPrepare', ['com_users.user', $this->user, $this->user->params, 0]);
 
-		$this->user->displayEvent = new stdClass();
+		$this->user->displayEvent = new \stdClass();
 		$results                  = $app->triggerEvent(
 			'onContentAfterTitle',
 			['com_users.user', &$this->user, &$this->user->params, 0]

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package   DPUsers
  * @copyright Copyright (C) 2022 Digital Peak GmbH. <https://www.digital-peak.com>
@@ -7,10 +8,12 @@
 
 defined('_JEXEC') or die();
 
-class Pkg_DPCalendarInstallerScript extends \Joomla\CMS\Installer\InstallerScript
+use Joomla\CMS\Installer\InstallerScript;
+
+class Pkg_DPCalendarInstallerScript extends InstallerScript
 {
-	protected $minimumPhp      = '7.4.0';
-	protected $minimumJoomla   = '4.1.0';
+	protected $minimumPhp      = '8.1.0';
+	protected $minimumJoomla   = '4.4.0';
 	protected $allowDowngrades = true;
 
 	public function preflight($type, $parent)
