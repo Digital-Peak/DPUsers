@@ -17,7 +17,7 @@ class UserModel extends ItemModel
 	{
 		$pk = $pk ?: (int) $this->getState('user.id');
 		if (!$pk) {
-			return null;
+			return new \stdClass();
 		}
 
 		return Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($pk);

@@ -9,13 +9,11 @@ namespace DigitalPeak\Component\DPUsers\Site\Service;
 
 use DigitalPeak\Component\DPUsers\Site\Service\Router\DPUsersMenuRules;
 use Joomla\CMS\Application\SiteApplication;
-use Joomla\CMS\Categories\CategoryFactoryInterface;
 use Joomla\CMS\Component\Router\RouterView;
 use Joomla\CMS\Component\Router\RouterViewConfiguration;
 use Joomla\CMS\Component\Router\Rules\NomenuRules;
 use Joomla\CMS\Component\Router\Rules\StandardRules;
 use Joomla\CMS\Menu\AbstractMenu;
-use Joomla\Database\DatabaseInterface;
 
 class Router extends RouterView
 {
@@ -40,22 +38,22 @@ class Router extends RouterView
 		$this->attachRule(new NomenuRules($this));
 	}
 
-	public function getGroupsSegment($id, $query): array
+	public function getGroupsSegment(string $id): array
 	{
 		return [(int) $id => $id];
 	}
 
-	public function getUserSegment($id, $query): array
+	public function getUserSegment(string $id): array
 	{
 		return [(int) $id => $id];
 	}
 
-	public function getFormSegment($id, $query): array
+	public function getFormSegment(string $id, mixed $query): array
 	{
-		return $this->getUserSegment($id, $query);
+		return $this->getUserSegment($id);
 	}
 
-	public function getUserId($segment, $query): int
+	public function getUserId(string $segment): int
 	{
 		return (int) $segment;
 	}

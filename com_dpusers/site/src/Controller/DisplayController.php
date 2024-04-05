@@ -8,14 +8,21 @@
 namespace DigitalPeak\Component\DPUsers\Site\Controller;
 
 use DigitalPeak\Component\DPUsers\Site\View\User\HtmlView;
+use Joomla\CMS\Application\CMSWebApplicationInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\User\CurrentUserInterface;
+use Joomla\CMS\User\CurrentUserTrait;
 
-class DisplayController extends BaseController
+class DisplayController extends BaseController implements CurrentUserInterface
 {
+	use CurrentUserTrait;
+
 	public function display($cachable = false, $urlparams = []): static
 	{
-		if ($this->app->getUserState('com_dpusers.user.data') === null) {
+		$app = $this->app;
+		if ($app instanceof CMSWebApplicationInterface && $app->getUserState('com_dpusers.user.data') === null) {
 			$cachable = true;
 		}
 
@@ -23,7 +30,7 @@ class DisplayController extends BaseController
 		$vName = $this->input->get('view', 'groups');
 		$this->input->set('view', $vName);
 
-		if ($this->app->getIdentity()->get('id')) {
+		if ($this->getCurrentUser()->id) {
 			$cachable = false;
 		}
 
@@ -45,7 +52,22 @@ class DisplayController extends BaseController
 		/** @var HtmlView $view */
 		$view = parent::getView($name, $type, $prefix, $config);
 
-		$groupsLayout = $this->app->getMenu()->getActive()->getParams()->get('groups_details_layout', 'default');
+		$app = $this->app;
+		if (!$app instanceof CMSWebApplicationInterface) {
+			return $view;
+		}
+
+		$menu = $app->getMenu();
+		if ($menu === null) {
+			return $view;
+		}
+
+		$active = $menu->getActive();
+		if ($active === null) {
+			return $view;
+		}
+
+		$groupsLayout = $active->getParams()->get('groups_details_layout', 'default');
 		if ($view instanceof HtmlView && $groupsLayout !== 'default') {
 			$view->setLayout($groupsLayout);
 		}
@@ -60,31 +82,41 @@ class DisplayController extends BaseController
 		}
 
 		$model = parent::getModel($name, $prefix, $config);
-		$model->setState('user.current', $this->app->getIdentity());
-		$model->setState('menu.current', $this->app->getMenu()->getActive());
+		if (!$model instanceof BaseDatabaseModel) {
+			return $model;
+		}
+
+		$app = $this->app;
+		if (!$app instanceof CMSWebApplicationInterface) {
+			return $model;
+		}
+
+		if ($app->getMenu() !== null) {
+			$model->setState('menu.current', $app->getMenu()->getActive());
+		}
 
 		if ($id = $this->input->get('id')) {
 			$model->setState('user.id', $id);
 		}
 
 		if ($groups = $this->input->getString('groups', [])) {
-			$model->setState('filter.groups', is_string($groups) ? explode(',', $groups) : $groups);
+			$model->setState('filter.groups', explode(',', $groups));
 		}
 
 		if ($return = $this->input->get('return', '', 'base64')) {
 			$model->setState('return_page', base64_decode((string) $return));
 		}
 
-		if ($search = $this->app->getUserStateFromRequest('com_dpusers.filter.search', 'search')) {
+		if ($search = $app->getUserStateFromRequest('com_dpusers.filter.search', 'search')) {
 			$model->setState('filter.search', $search);
 		}
 
 		if ($search !== null) {
-			$this->app->setUserState('com_dpusers.filter.search', $search);
+			$app->setUserState('com_dpusers.filter.search', $search);
 		}
 
-		$model->setState('list.start', $this->app->input->get('start', 0, 'uint'));
-		$model->setState('list.limit', $this->app->getUserStateFromRequest('global.list.limit', 'limit', $this->app->get('list_limit'), 'uint'));
+		$model->setState('list.start', $app->input->get('start', 0, 'uint'));
+		$model->setState('list.limit', $app->getUserStateFromRequest('global.list.limit', 'limit', $app->get('list_limit'), 'uint'));
 
 		return $model;
 	}

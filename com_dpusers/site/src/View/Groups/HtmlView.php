@@ -7,22 +7,32 @@
 
 namespace DigitalPeak\Component\DPUsers\Site\View\Groups;
 
+use Joomla\CMS\Application\CMSWebApplicationInterface;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use Joomla\CMS\Pagination\Pagination;
 use Joomla\Component\Fields\Administrator\Helper\FieldsHelper;
 use Joomla\Registry\Registry;
 
 class HtmlView extends BaseHtmlView
 {
+	/** @var Pagination */
 	public $pagination;
-	/**
-	 * @var never[]|array<mixed, array<'field'|'header', mixed>>
-	 */
+
+	/** @var array */
 	public $headers;
+
+	/** @var Registry */
 	protected $state;
+
+	/** @var Registry */
 	protected $params;
+
+	/** @var array */
 	protected $users;
+
+	/** @var bool */
 	protected $canAddUser;
 
 	public function display($tpl = null): void
@@ -33,11 +43,7 @@ class HtmlView extends BaseHtmlView
 		$this->pagination = $this->get('Pagination');
 		$this->canAddUser = false;
 		$this->headers    = [];
-
-		/** @var User $currentUser */
-		if ($currentUser = $this->state->get('user.current')) {
-			$this->canAddUser = $currentUser->authorise('core.create', 'com_users');
-		}
+		$this->canAddUser = $this->getCurrentUser()->authorise('core.create', 'com_users');
 
 		foreach ($this->users as $index => $user) {
 			$user->text = '';
@@ -73,18 +79,20 @@ class HtmlView extends BaseHtmlView
 
 	private function _prepareDocument(): void
 	{
-		if ($menu = Factory::getApplication()->getMenu()->getActive()) {
+		$app = Factory::getApplication();
+
+		if ($app instanceof CMSWebApplicationInterface && $app->getMenu() !== null && $menu = $app->getMenu()->getActive()) {
 			$this->params->def('page_heading', $this->params->get('page_title', $menu->title));
 		}
 
 		$this->setDocumentTitle($this->params->get('page_title', ''));
 
 		if ($this->params->get('menu-meta_description')) {
-			$this->document->setDescription($this->params->get('menu-meta_description'));
+			$this->getDocument()->setDescription($this->params->get('menu-meta_description'));
 		}
 
 		if ($this->params->get('robots')) {
-			$this->document->setMetaData('robots', $this->params->get('robots'));
+			$this->getDocument()->setMetaData('robots', $this->params->get('robots'));
 		}
 	}
 }

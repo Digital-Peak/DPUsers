@@ -26,6 +26,9 @@ class DPUsersMenuRules extends MenuRules
 		$values[]     = [$language, '*'];
 
 		$menuItems = $this->router->menu->getItems($attributes, $values);
+		if (!is_array($menuItems)) {
+			$menuItems = [$menuItems];
+		}
 
 		// As the ids of the groups are in the params we need to assign them as group ids to the lookup
 		foreach ($menuItems as $menuItem) {

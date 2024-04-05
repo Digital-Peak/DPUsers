@@ -15,13 +15,4 @@ class Pkg_DPCalendarInstallerScript extends InstallerScript
 	protected $minimumPhp      = '8.1.0';
 	protected $minimumJoomla   = '4.4.0';
 	protected $allowDowngrades = true;
-
-	public function preflight($type, $parent)
-	{
-		return parent::preflight($type, $parent);
-	}
-
-	public function postflight($type, $parent)
-	{
-	}
 }

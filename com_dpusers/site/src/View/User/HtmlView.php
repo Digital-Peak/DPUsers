@@ -11,16 +11,21 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\User\User;
 use Joomla\Registry\Registry;
 
 class HtmlView extends BaseHtmlView
 {
+	/** @var array */
 	public $groupedFields;
-	/**
-	 * @var mixed
-	 */
+
+	/** @var array */
 	public $groups;
+
+	/** @var Registry */
 	protected $state;
+
+	/** @var Registry */
 	protected $params;
 
 	/** @var User $user */
@@ -28,14 +33,16 @@ class HtmlView extends BaseHtmlView
 
 	/** @var User $currentUser */
 	protected $currentUser;
+
+	/** @var Registry */
 	protected $permissions;
 
-	public function display($tpl = null)
+	public function display($tpl = null): void
 	{
 		$this->state         = $this->get('State');
 		$this->params        = $this->state->get('parameters.menu', new Registry());
 		$this->user          = $this->get('Item');
-		$this->currentUser   = $this->state->get('user.current');
+		$this->currentUser   = $this->getCurrentUser();
 		$this->permissions   = new Registry(['can_edit' => false, 'can_delete' => false]);
 		$this->groupedFields = [];
 
@@ -69,10 +76,8 @@ class HtmlView extends BaseHtmlView
 		);
 		$this->user->displayEvent->afterDisplayContent = trim(implode("\n", $results));
 
-		if ($this->currentUser) {
-			$this->permissions->set('can_edit', $this->currentUser->authorise('core.edit', 'com_users'));
-			$this->permissions->set('can_delete', $this->currentUser->authorise('core.delete', 'com_users'));
-		}
+		$this->permissions->set('can_edit', $this->currentUser->authorise('core.edit', 'com_users'));
+		$this->permissions->set('can_delete', $this->currentUser->authorise('core.delete', 'com_users'));
 
 		$model = $app->bootComponent('com_fields')->getMVCFactory()->createModel('Groups', 'Administrator', ['ignore_request' => true]);
 		$model->setState('filter.context', 'com_users.user');
@@ -80,7 +85,9 @@ class HtmlView extends BaseHtmlView
 		$this->groups = $model->getItems() ?: [];
 
 		if (empty($this->user->jcfields)) {
-			return parent::display($tpl);
+			parent::display($tpl);
+
+			return;
 		}
 
 		$selectedFields = [];

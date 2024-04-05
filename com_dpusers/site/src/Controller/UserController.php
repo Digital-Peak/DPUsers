@@ -10,9 +10,13 @@ namespace DigitalPeak\Component\DPUsers\Site\Controller;
 use Joomla\CMS\MVC\Controller\FormController;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\User\CurrentUserInterface;
+use Joomla\CMS\User\CurrentUserTrait;
 
-class UserController extends FormController
+class UserController extends FormController implements CurrentUserInterface
 {
+	use CurrentUserTrait;
+
 	protected $view_item = 'userform';
 	protected $view_list = 'groups';
 
@@ -27,12 +31,12 @@ class UserController extends FormController
 
 	protected function allowAdd($data = [])
 	{
-		return $this->app->getIdentity()->authorise('core.create', 'com_users');
+		return $this->getCurrentUser()->authorise('core.create', 'com_users');
 	}
 
 	protected function allowEdit($data = [], $key = 'id')
 	{
-		return $this->app->getIdentity()->authorise('core.edit', 'com_users');
+		return $this->getCurrentUser()->authorise('core.edit', 'com_users');
 	}
 
 	public function cancel($key = null)
@@ -59,14 +63,14 @@ class UserController extends FormController
 			$append .= '&groups=' . $groups;
 		}
 
-		if ($return = $this->getReturnPage()) {
-			$append .= '&return=' . base64_encode((string) $return);
+		if (($return = $this->getReturnPage()) !== '' && ($return = $this->getReturnPage()) !== '0') {
+			$append .= '&return=' . base64_encode($return);
 		}
 
 		return $append;
 	}
 
-	protected function getReturnPage()
+	protected function getReturnPage(): string
 	{
 		$return = $this->input->get('return', null, 'base64');
 
@@ -74,6 +78,6 @@ class UserController extends FormController
 			return Uri::base();
 		}
 
-		return base64_decode((string) $return);
+		return base64_decode((string) $return) ?: '';
 	}
 }

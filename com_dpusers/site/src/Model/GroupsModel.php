@@ -16,25 +16,25 @@ class GroupsModel extends ListModel
 	protected function getListQuery()
 	{
 		// Create a new query object
-		$db    = $this->getDbo();
+		$db    = $this->getDatabase();
 		$query = $db->getQuery(true);
 
 		// Select the required fields from the table
 		$query->select('DISTINCT a.*');
-		$query->from($db->quoteName('#__users') . ' AS a');
+		$query->from('#__users AS a');
 
 		// If the model is set to check item state, add to the query.
 		$state = $this->getState('filter.state');
 		if (is_numeric($state)) {
-			$query->where($db->quoteName('a.block') . ' = :state')->bind(':state', $state, ParameterType::INTEGER);
+			$query->where('a.block = :state')->bind(':state', $state, ParameterType::INTEGER);
 		}
 
 		// If the model is set to check the activated state, add to the query.
 		if ($active = $this->getState('filter.active')) {
 			if ($active == '0') {
-				$query->whereIn($db->quoteName('a.activation'), ['', '0']);
+				$query->whereIn('a.activation', ['', '0']);
 			} elseif ($active == '1') {
-				$query->where($query->length($db->quoteName('a.activation')) . ' > 1');
+				$query->where($query->length('a.activation') . ' > 1');
 			}
 		}
 
@@ -42,40 +42,38 @@ class GroupsModel extends ListModel
 		if ($groups = $this->getState('filter.groups', $this->getState('parameters.menu', new Registry())->get('groups_ids', [-1]))) {
 			$query->join('LEFT', '#__user_usergroup_map AS map2 ON map2.user_id = a.id')
 				->group(
-					$db->quoteName(
-						[
-							'a.id',
-							'a.name',
-							'a.username',
-							'a.password',
-							'a.block',
-							'a.sendEmail',
-							'a.registerDate',
-							'a.lastvisitDate',
-							'a.activation',
-							'a.params',
-							'a.email',
-							'a.lastResetTime',
-							'a.resetCount',
-							'a.otpKey',
-							'a.otep',
-							'a.requireReset'
-						]
-					)
+					[
+						'a.id',
+						'a.name',
+						'a.username',
+						'a.password',
+						'a.block',
+						'a.sendEmail',
+						'a.registerDate',
+						'a.lastvisitDate',
+						'a.activation',
+						'a.params',
+						'a.email',
+						'a.lastResetTime',
+						'a.resetCount',
+						'a.otpKey',
+						'a.otep',
+						'a.requireReset'
+					]
 				);
 
-			$query->whereIn($db->quoteName('map2.group_id'), $groups);
+			$query->whereIn('map2.group_id', $groups);
 		}
 
 		// Filter the items over the search string if set
 		if ($search = $this->getState('filter.search')) {
 			if (stripos((string) $search, 'id:') === 0) {
 				$ids = (int) substr((string) $search, 3);
-				$query->where($db->quoteName('a.id') . ' = :id');
+				$query->where('a.id = :id');
 				$query->bind(':id', $ids, ParameterType::INTEGER);
 			} elseif (stripos((string) $search, 'username:') === 0) {
 				$search = '%' . substr((string) $search, 9) . '%';
-				$query->where($db->quoteName('a.username') . ' LIKE :username');
+				$query->where('a.username LIKE :username');
 				$query->bind(':username', $search);
 			} else {
 				$search = '%' . trim((string) $search) . '%';
@@ -87,12 +85,7 @@ class GroupsModel extends ListModel
 				);
 
 				// Add the clauses to the query
-				$query->where(
-					'(' . $db->quoteName('a.name') . ' LIKE :name'
-					. ' OR ' . $db->quoteName('a.username') . ' LIKE :username'
-					. ' OR ' . $db->quoteName('a.email') . ' LIKE :email'
-					. ' OR ' . $db->quoteName('f.value') . ' LIKE :search)'
-				)
+				$query->where('(a.name LIKE :name OR a.username LIKE :username OR a.email LIKE :email OR f.value LIKE :search)')
 					->bind(':name', $search)
 					->bind(':username', $search)
 					->bind(':email', $search)
@@ -110,15 +103,15 @@ class GroupsModel extends ListModel
 
 				// Add the clauses to the query
 				$query->where(
-					'(' . $db->quoteName('ff.value') . ' ' . $search->operator . ' ' . $db->quote($search->value) .
-					' AND ' . $db->quoteName('ff.field_id') . ' = ' . (int)$search->field . ')'
+					'(ff.value ' . $search->operator . ' ' . $db->quote($search->value) .
+					' AND ff.field_id = ' . (int)$search->field . ')'
 				);
 			}
 		}
 
 		// Add the list ordering clause.
 		$query->order(
-			$db->quoteName($db->escape($this->getState('list.ordering', 'a.name'))) . ' ' . $db->escape($this->getState('list.direction', 'ASC'))
+			$db->escape($this->getState('list.ordering', 'a.name')) . ' ' . $db->escape($this->getState('list.direction', 'ASC'))
 		);
 
 		return $query;
