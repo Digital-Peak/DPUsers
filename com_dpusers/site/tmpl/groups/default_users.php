@@ -34,7 +34,9 @@ $arguments = 'groups=' . implode(',', $this->params->get('groups_ids', [-1])) . 
                                 <?php echo $user->email; ?>
                             </a>
                         <?php } else { ?>
-                                <?php echo is_numeric($header['field']) ? $user->jcfields[$header['field']]->value : $user->{$header['field']}; ?>
+							<?php $this->currentUser  = $user; ?>
+							<?php $this->currentField = $header['field']; ?>
+							<?php echo $this->loadTemplate('users_field'); ?>
                         <?php } ?>
                     </td>
                 <?php } ?>
