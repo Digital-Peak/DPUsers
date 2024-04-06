@@ -1,5 +1,26 @@
 .com-dpusers-groups {
-    &__form .dp-form__limit {
-        float: right;
-    }
+	&__form .dp-form__limit {
+		float: right;
+	}
+
+	&__actions {
+		clear: both;
+	}
+
+	.dp-field {
+		display: flex;
+		flex-wrap: wrap;
+		margin-bottom: 10px;
+
+		&__label {
+			flex: 0 0 160px;
+			font-weight: bold;
+			text-align: left;
+		}
+
+		&__content {
+			flex: 1 1 200px;
+			word-break: break-word;
+		}
+	}
 }

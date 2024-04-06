@@ -12,7 +12,7 @@ if (is_numeric($this->currentField)) {
 	$class = ' ' . $this->currentUser->jcfields[$this->currentField]->params->get('value_render_class', '');
 }
 ?>
-<span class="com-dpusers-groups__users-field dp-field<?php  echo $class ?>">
+<span class="dp-field__value<?php echo $class ?>">
 	<?php if (!is_numeric($this->currentField)) { ?>
 		<?php echo $this->currentUser->{$this->currentField}; ?>
 	<?php } else { ?>
