@@ -16,7 +16,7 @@ $arguments = 'groups=' . implode(',', $this->params->get('groups_ids', [-1])) . 
 	<?php foreach ($this->users as $user) { ?>
 		<div class="dp-user">
 			<h2>
-				<a href="<?php echo Route::_('index.php?option=com_dpusers&view=user&id=' . (int)$user->id); ?>">
+				<a href="<?php echo Route::_('index.php?option=com_dpusers&view=user&id=' . (int)$user->id); ?>" title="<?php echo htmlspecialchars($user->name); ?>">
 					<?php echo $user->name; ?>
 				</a>
 			</h2>
