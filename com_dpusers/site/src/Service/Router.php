@@ -8,6 +8,7 @@
 namespace DigitalPeak\Component\DPUsers\Site\Service;
 
 use DigitalPeak\Component\DPUsers\Site\Service\Router\DPUsersMenuRules;
+use Joomla\CMS\Access\Access;
 use Joomla\CMS\Application\SiteApplication;
 use Joomla\CMS\Component\Router\RouterView;
 use Joomla\CMS\Component\Router\RouterViewConfiguration;
@@ -38,8 +39,12 @@ class Router extends RouterView
 		$this->attachRule(new NomenuRules($this));
 	}
 
-	public function getGroupsSegment(string $id): array
+	public function getGroupsSegment(string|array $id): array
 	{
+		if (\is_array($id)) {
+			return $id;
+		}
+
 		return [(int)$id => $id];
 	}
 
@@ -56,5 +61,14 @@ class Router extends RouterView
 	public function getUserId(string $segment): int
 	{
 		return (int)$segment;
+	}
+
+	public function getPath($query)
+	{
+		if (!empty($query['view']) && $query['view'] === 'user' && !empty($query['id'])) {
+			$query['groups_ids'] = Access::getGroupsByUser($query['id']);
+		}
+
+		return parent::getPath($query);
 	}
 }
