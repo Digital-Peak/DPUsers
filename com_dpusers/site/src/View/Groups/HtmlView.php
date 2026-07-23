@@ -17,30 +17,26 @@ use Joomla\Registry\Registry;
 
 class HtmlView extends BaseHtmlView
 {
-	/** @var Pagination */
-	public $pagination;
+	public Pagination $pagination;
 
-	/** @var array */
-	public $headers;
+	public array $headers;
 
-	/** @var Registry */
-	protected $state;
+	protected Registry $state;
 
-	/** @var Registry */
-	protected $params;
+	protected Registry $params;
 
-	/** @var array */
-	protected $users;
+	protected array $users;
 
-	/** @var bool */
-	protected $canAddUser;
+	protected bool $canAddUser;
 
 	public function display($tpl = null): void
 	{
-		$this->state      = $this->get('State');
+		$model = $this->getModel();
+
+		$this->state      = $model->getState();
 		$this->params     = $this->state->get('parameters.menu', new Registry());
-		$this->users      = $this->get('Items');
-		$this->pagination = $this->get('Pagination');
+		$this->users      = $model->getItems();
+		$this->pagination = $model->getPagination();
 		$this->canAddUser = false;
 		$this->headers    = [];
 		$this->canAddUser = $this->getCurrentUser()->authorise('core.create', 'com_users');

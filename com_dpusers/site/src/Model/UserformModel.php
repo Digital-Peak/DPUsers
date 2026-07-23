@@ -28,6 +28,6 @@ class UserformModel extends UserModel
 
 	public function getReturnPage(): string
 	{
-		return base64_encode((string) $this->getState('return_page', ''));
+		return base64_encode((string)$this->getState('return_page', ''));
 	}
 }

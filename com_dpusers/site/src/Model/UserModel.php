@@ -9,15 +9,19 @@ namespace DigitalPeak\Component\DPUsers\Site\Model;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\ItemModel;
+use Joomla\CMS\User\User;
 use Joomla\CMS\User\UserFactoryInterface;
 
 class UserModel extends ItemModel
 {
+	/**
+	 * @return User
+	 */
 	public function getItem($pk = null)
 	{
-		$pk = $pk ?: (int) $this->getState('user.id');
+		$pk = $pk ?: (int)$this->getState('user.id');
 		if (!$pk) {
-			return new \stdClass();
+			return new User();
 		}
 
 		return Factory::getContainer()->get(UserFactoryInterface::class)->loadUserById($pk);

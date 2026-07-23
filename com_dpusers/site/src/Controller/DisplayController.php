@@ -42,7 +42,7 @@ class DisplayController extends BaseController implements CurrentUserInterface
 
 		$this->app->getLanguage()->load('com_users', JPATH_ADMINISTRATOR);
 
-		parent::display($cachable, []);
+		parent::display($cachable);
 
 		return $this;
 	}
@@ -68,7 +68,7 @@ class DisplayController extends BaseController implements CurrentUserInterface
 		}
 
 		$groupsLayout = $active->getParams()->get('groups_details_layout', 'default');
-		if ($view instanceof HtmlView && $groupsLayout !== 'default') {
+		if ($groupsLayout !== 'default') {
 			$view->setLayout($groupsLayout);
 		}
 
@@ -77,7 +77,7 @@ class DisplayController extends BaseController implements CurrentUserInterface
 
 	public function getModel($name = '', $prefix = '', $config = ['ignore_request' => true])
 	{
-		if (!array_key_exists('ignore_request', $config)) {
+		if (!\array_key_exists('ignore_request', $config)) {
 			$config['ignore_request'] = true;
 		}
 
@@ -104,7 +104,7 @@ class DisplayController extends BaseController implements CurrentUserInterface
 		}
 
 		if ($return = $this->input->get('return', '', 'base64')) {
-			$model->setState('return_page', base64_decode((string) $return));
+			$model->setState('return_page', base64_decode((string)$return));
 		}
 
 		if ($search = $app->getUserStateFromRequest('com_dpusers.filter.search', 'search')) {

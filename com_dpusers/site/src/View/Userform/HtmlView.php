@@ -7,6 +7,7 @@
 
 namespace DigitalPeak\Component\DPUsers\Site\View\UserForm;
 
+use DigitalPeak\Component\DPUsers\Site\Model\UserformModel;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Plugin\PluginHelper;
@@ -14,39 +15,42 @@ use Joomla\Registry\Registry;
 
 class HtmlView extends BaseHtmlView
 {
-	/** @var array */
-	public $grouplist;
+	public array $grouplist;
 
-	/** @var array */
-	public $groups;
+	public array $groups;
 
-	/** @var Registry */
-	protected $params;
+	protected Registry $params;
 
-	/** @var Form */
-	protected $form;
+	protected Form $form;
 
-	/** @var string */
-	protected $returnPage;
+	protected string $returnPage;
 
 	public function display($tpl = null): void
 	{
 		PluginHelper::importPlugin('content');
 
-		$this->params     = $this->get('State')->get('parameters.menu', new Registry());
-		$this->form       = $this->get('Form');
-		$this->returnPage = $this->get('ReturnPage');
+		/** @var UserformModel $model */
+		$model = $this->getModel();
+
+		$state            = $model->getState();
+		$this->params     = $state->get('parameters.menu', new Registry());
+		$this->returnPage = $model->getReturnPage();
+
+		$form = $model->getForm();
+		if ($form instanceof Form) {
+			$this->form = $form;
+		}
 
 		$this->grouplist = [];
 		$this->groups    = [];
 		$user            = $this->getCurrentUser();
-		if ((int) $user->id !== (int) $this->form->getValue('id') || $user->authorise('core.admin')) {
-			$this->grouplist = $this->get('Groups');
-			$this->groups    = $this->get('AssignedGroups');
+		if ($user->id !== (int)$this->form->getValue('id') || $user->authorise('core.admin')) {
+			$this->grouplist = $model->getGroups();
+			$this->groups    = $model->getAssignedGroups();
 		}
 
-		$this->form->setValue('password', null);
-		$this->form->setValue('password2', null);
+		$this->form->setValue('password');
+		$this->form->setValue('password2');
 
 		parent::display($tpl);
 	}

@@ -67,16 +67,16 @@ class GroupsModel extends ListModel
 
 		// Filter the items over the search string if set
 		if ($search = $this->getState('filter.search')) {
-			if (stripos((string) $search, 'id:') === 0) {
-				$ids = (int) substr((string) $search, 3);
+			if (stripos((string)$search, 'id:') === 0) {
+				$ids = (int)substr((string)$search, 3);
 				$query->where('a.id = :id');
 				$query->bind(':id', $ids, ParameterType::INTEGER);
-			} elseif (stripos((string) $search, 'username:') === 0) {
-				$search = '%' . substr((string) $search, 9) . '%';
+			} elseif (stripos((string)$search, 'username:') === 0) {
+				$search = '%' . substr((string)$search, 9) . '%';
 				$query->where('a.username LIKE :username');
 				$query->bind(':username', $search);
 			} else {
-				$search = '%' . trim((string) $search) . '%';
+				$search = '%' . trim((string)$search) . '%';
 
 				// Join to fields
 				$query->join(
@@ -99,7 +99,7 @@ class GroupsModel extends ListModel
 			$query->join('RIGHT', '#__fields_values AS ff ON ff.item_id = a.id');
 
 			foreach ($customFields as $search) {
-				$search->operator = in_array($search->operator, ['=', '<', '>', 'like']) ? $search->operator : '=';
+				$search->operator = \in_array($search->operator, ['=', '<', '>', 'like']) ? $search->operator : '=';
 
 				// Add the clauses to the query
 				$query->where(

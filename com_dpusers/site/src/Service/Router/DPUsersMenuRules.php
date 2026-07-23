@@ -26,7 +26,7 @@ class DPUsersMenuRules extends MenuRules
 		$values[]     = [$language, '*'];
 
 		$menuItems = $this->router->menu->getItems($attributes, $values);
-		if (!is_array($menuItems)) {
+		if (!\is_array($menuItems)) {
 			$menuItems = [$menuItems];
 		}
 

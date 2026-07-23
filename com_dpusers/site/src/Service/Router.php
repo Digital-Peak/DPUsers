@@ -40,12 +40,12 @@ class Router extends RouterView
 
 	public function getGroupsSegment(string $id): array
 	{
-		return [(int) $id => $id];
+		return [(int)$id => $id];
 	}
 
 	public function getUserSegment(string $id): array
 	{
-		return [(int) $id => $id];
+		return [(int)$id => $id];
 	}
 
 	public function getFormSegment(string $id, mixed $query): array
@@ -55,6 +55,6 @@ class Router extends RouterView
 
 	public function getUserId(string $segment): int
 	{
-		return (int) $segment;
+		return (int)$segment;
 	}
 }

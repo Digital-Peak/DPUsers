@@ -14,13 +14,13 @@
 
 		&__label {
 			flex: 0 0 160px;
-			font-weight: bold;
 			text-align: left;
+			font-weight: bold;
 		}
 
 		&__content {
 			flex: 1 1 200px;
-			word-break: break-word;
+			overflow-wrap: break-word;
 		}
 	}
 }

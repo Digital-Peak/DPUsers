@@ -16,32 +16,29 @@ use Joomla\Registry\Registry;
 
 class HtmlView extends BaseHtmlView
 {
-	/** @var array */
-	public $groupedFields;
+	public array $groupedFields;
 
-	/** @var array */
-	public $groups;
+	public array $groups;
 
-	/** @var Registry */
-	protected $state;
+	protected Registry $state;
 
-	/** @var Registry */
-	protected $params;
+	protected Registry $params;
 
-	/** @var User $user */
-	protected $user;
+	protected User $user;
 
-	/** @var User $currentUser */
-	protected $currentUser;
+	protected User $currentUser;
 
-	/** @var Registry */
-	protected $permissions;
+	protected Registry $permissions;
+
+	protected \stdClass $displayEvent;
 
 	public function display($tpl = null): void
 	{
-		$this->state         = $this->get('State');
+		$model = $this->getModel();
+
+		$this->state         = $model->getState();
 		$this->params        = $this->state->get('parameters.menu', new Registry());
-		$this->user          = $this->get('Item');
+		$this->user          = $model->getItem();
 		$this->currentUser   = $this->getCurrentUser();
 		$this->permissions   = new Registry(['can_edit' => false, 'can_delete' => false]);
 		$this->groupedFields = [];
@@ -54,27 +51,26 @@ class HtmlView extends BaseHtmlView
 		PluginHelper::importPlugin('content');
 		$app = Factory::getApplication();
 
-		$this->user->text = '';
 		$app->triggerEvent('onContentPrepare', ['com_users.user', $this->user, $this->user->params, 0]);
 
-		$this->user->displayEvent = new \stdClass();
-		$results                  = $app->triggerEvent(
+		$this->displayEvent = new \stdClass();
+		$results            = $app->triggerEvent(
 			'onContentAfterTitle',
 			['com_users.user', &$this->user, &$this->user->params, 0]
 		);
-		$this->user->displayEvent->afterDisplayTitle = trim(implode("\n", $results));
+		$this->displayEvent->afterDisplayTitle = trim(implode("\n", $results));
 
 		$results = $app->triggerEvent(
 			'onContentBeforeDisplay',
 			['com_users.user', &$this->user, &$this->user->params, 0]
 		);
-		$this->user->displayEvent->beforeDisplayContent = trim(implode("\n", $results));
+		$this->displayEvent->beforeDisplayContent = trim(implode("\n", $results));
 
 		$results = $app->triggerEvent(
 			'onContentAfterDisplay',
 			['com_users.user', &$this->user, &$this->user->params, 0]
 		);
-		$this->user->displayEvent->afterDisplayContent = trim(implode("\n", $results));
+		$this->displayEvent->afterDisplayContent = trim(implode("\n", $results));
 
 		$this->permissions->set('can_edit', $this->currentUser->authorise('core.edit', 'com_users'));
 		$this->permissions->set('can_delete', $this->currentUser->authorise('core.delete', 'com_users'));
@@ -99,11 +95,11 @@ class HtmlView extends BaseHtmlView
 		}
 
 		foreach ($this->user->jcfields as $field) {
-			if ($selectedFields && !in_array($field->id, $selectedFields)) {
+			if ($selectedFields && !\in_array($field->id, $selectedFields)) {
 				continue;
 			}
 
-			if (!array_key_exists($field->group_id, $this->groupedFields)) {
+			if (!\array_key_exists($field->group_id, $this->groupedFields)) {
 				$this->groupedFields[$field->group_id] = [];
 			}
 			$this->groupedFields[$field->group_id][] = $field;

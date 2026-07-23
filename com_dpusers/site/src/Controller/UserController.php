@@ -18,11 +18,12 @@ class UserController extends FormController implements CurrentUserInterface
 	use CurrentUserTrait;
 
 	protected $view_item = 'userform';
+
 	protected $view_list = 'groups';
 
 	public function getModel($name = 'userform', $prefix = '', $config = ['ignore_request' => true])
 	{
-		if (!array_key_exists('ignore_request', $config)) {
+		if (!\array_key_exists('ignore_request', $config)) {
 			$config['ignore_request'] = true;
 		}
 
@@ -53,7 +54,7 @@ class UserController extends FormController implements CurrentUserInterface
 		$tmpl = $this->input->get('tmpl');
 
 		$append = $tmpl ? '&tmpl=' . $tmpl : '';
-		$append .= '&layout=edit&' . $urlVar . '=' . (int) $recordId;
+		$append .= '&layout=edit&' . $urlVar . '=' . (int)$recordId;
 
 		if ($itemId = $this->input->getInt('Itemid')) {
 			$append .= '&Itemid=' . $itemId;
@@ -74,10 +75,10 @@ class UserController extends FormController implements CurrentUserInterface
 	{
 		$return = $this->input->get('return', null, 'base64');
 
-		if (empty($return) || !Uri::isInternal(base64_decode((string) $return))) {
+		if (empty($return) || !Uri::isInternal(base64_decode((string)$return))) {
 			return Uri::base();
 		}
 
-		return base64_decode((string) $return) ?: '';
+		return base64_decode((string)$return) ?: '';
 	}
 }

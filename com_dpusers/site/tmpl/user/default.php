@@ -12,12 +12,12 @@ defined('_JEXEC') or die;
     <?php echo $this->loadTemplate('actions'); ?>
     <?php echo $this->loadTemplate('title'); ?>
     <div class="com-dpusers-user__event-text">
-		<?php echo $this->user->displayEvent->afterDisplayTitle; ?>
+		<?php echo $this->displayEvent->afterDisplayTitle; ?>
 	</div>
     <div class="com-dpusers-user__event-text">
-		<?php echo $this->user->displayEvent->beforeDisplayContent; ?>
+		<?php echo $this->displayEvent->beforeDisplayContent; ?>
 	</div>
     <div class="com-dpusers-user__event-text">
-		<?php echo $this->user->displayEvent->afterDisplayContent; ?>
+		<?php echo $this->displayEvent->afterDisplayContent; ?>
 	</div>
 </div>
