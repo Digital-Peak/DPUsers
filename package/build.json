@@ -1,20 +1,24 @@
 {
-    "packages": [
-        {
-            "name": "DPUsers-Core",
-            "originalManifestFileName": "pkg_dpusers",
-            "substituteManifestFileName": "pkg_dpusers",
-            "extensions": [
-                {
-                    "name": "com_dpusers",
-                    "substitutes": [
-                        {
-                            "original": "admin/dpusers.xml",
-                            "replace": "dpusers.xml"
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
+	"packages": [
+		{
+			"name": "DPUsers-Free",
+			"originalManifestFileName": "pkg_dpusers",
+			"substituteManifestFileName": "pkg_dpusers",
+			"extensions": [
+				{
+					"name": "com_dpusers",
+					"substitutes": [
+						{
+							"original": "admin/dpusers.xml",
+							"replace": "dpusers.xml"
+						},
+						{
+							"original": "admin/script.php",
+							"replace": "script.php"
+						}
+					]
+				}
+			]
+		}
+	]
 }
