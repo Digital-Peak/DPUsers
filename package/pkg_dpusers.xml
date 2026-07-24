@@ -12,6 +12,7 @@
 	<version>DP_DEPLOY_VERSION</version>
 	<files>
 		<file id="com_dpusers" type="component">com_dpusers.zip</file>
+		<file id="plg_installer_dpusers" type="plugin" group="installer" client="site">plg_installer_dpusers.zip</file>
 	</files>
 	<scriptfile>script.php</scriptfile>
 </extension>
