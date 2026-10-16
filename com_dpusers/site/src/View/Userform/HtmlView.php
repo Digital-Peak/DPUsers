@@ -35,11 +35,7 @@ class HtmlView extends BaseHtmlView
 		$state            = $model->getState();
 		$this->params     = $state->get('parameters.menu', new Registry());
 		$this->returnPage = $model->getReturnPage();
-
-		$form = $model->getForm();
-		if ($form instanceof Form) {
-			$this->form = $form;
-		}
+		$this->form       = $model->getForm();
 
 		$this->grouplist = [];
 		$this->groups    = [];

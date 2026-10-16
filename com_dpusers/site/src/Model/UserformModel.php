@@ -18,10 +18,8 @@ class UserformModel extends UserModel
 		Form::addFormPath(JPATH_ADMINISTRATOR . '/components/com_users/forms');
 
 		$form = parent::getForm($data, $loadData);
-		if ($form instanceof Form) {
-			$form->setValue('password', '');
-			$form->setValue('groups', null, ArrayHelper::toInteger($this->getState('filter.groups', [])));
-		}
+		$form->setValue('password', '');
+		$form->setValue('groups', null, ArrayHelper::toInteger($this->getState('filter.groups', [])));
 
 		return $form;
 	}
