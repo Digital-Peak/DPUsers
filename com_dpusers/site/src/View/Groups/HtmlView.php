@@ -8,10 +8,12 @@
 namespace DigitalPeak\Component\DPUsers\Site\View\Groups;
 
 use Joomla\CMS\Application\CMSWebApplicationInterface;
+use Joomla\CMS\Event\Content\ContentPrepareEvent;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 use Joomla\CMS\Pagination\Pagination;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Component\Fields\Administrator\Helper\FieldsHelper;
 use Joomla\Registry\Registry;
 
@@ -41,9 +43,17 @@ class HtmlView extends BaseHtmlView
 		$this->headers    = [];
 		$this->canAddUser = $this->getCurrentUser()->authorise('core.create', 'com_users');
 
+		$dispatcher = $this->getDispatcher();
+		PluginHelper::importPlugin('content', null, true, $dispatcher);
+
 		foreach ($this->users as $index => $user) {
 			$user->text = '';
-			Factory::getApplication()->triggerEvent('onContentPrepare', ['com_users.user', $user, $user->params, $index]);
+			$dispatcher->dispatch('onContentPrepare', new ContentPrepareEvent('onContentPrepare', [
+				'context' => 'com_users.user',
+				'subject' => $user,
+				'params'  => new Registry($user->params),
+				'page'    => $index,
+			]));
 		}
 
 		$fields = FieldsHelper::getFields('com_users.user');

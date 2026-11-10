@@ -7,6 +7,10 @@
 
 namespace DigitalPeak\Component\DPUsers\Site\View\User;
 
+use Joomla\CMS\Event\Content\AfterDisplayEvent;
+use Joomla\CMS\Event\Content\AfterTitleEvent;
+use Joomla\CMS\Event\Content\BeforeDisplayEvent;
+use Joomla\CMS\Event\Content\ContentPrepareEvent;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
@@ -48,29 +52,31 @@ class HtmlView extends BaseHtmlView
 			throw new \Exception(Text::_('COM_DPUSERS_USER_VIEW_USER_NOT_FOUND'));
 		}
 
-		PluginHelper::importPlugin('content');
-		$app = Factory::getApplication();
+		$app        = Factory::getApplication();
+		$dispatcher = $this->getDispatcher();
+		PluginHelper::importPlugin('content', null, true, $dispatcher);
 
-		$app->triggerEvent('onContentPrepare', ['com_users.user', $this->user, $this->user->params, 0]);
+		$contentEventArguments = [
+			'context' => 'com_users.user',
+			'subject' => $this->user,
+			'params'  => new Registry($this->user->params),
+			'page'    => 0,
+		];
+
+		$dispatcher->dispatch('onContentPrepare', new ContentPrepareEvent('onContentPrepare', $contentEventArguments));
 
 		$this->displayEvent = new \stdClass();
-		$results            = $app->triggerEvent(
-			'onContentAfterTitle',
-			['com_users.user', &$this->user, &$this->user->params, 0]
-		);
-		$this->displayEvent->afterDisplayTitle = trim(implode("\n", $results));
+		$contentEvents      = [
+			'afterDisplayTitle'    => new AfterTitleEvent('onContentAfterTitle', $contentEventArguments),
+			'beforeDisplayContent' => new BeforeDisplayEvent('onContentBeforeDisplay', $contentEventArguments),
+			'afterDisplayContent'  => new AfterDisplayEvent('onContentAfterDisplay', $contentEventArguments),
+		];
 
-		$results = $app->triggerEvent(
-			'onContentBeforeDisplay',
-			['com_users.user', &$this->user, &$this->user->params, 0]
-		);
-		$this->displayEvent->beforeDisplayContent = trim(implode("\n", $results));
+		foreach ($contentEvents as $resultKey => $event) {
+			$results = $dispatcher->dispatch($event->getName(), $event)->getArgument('result', []);
 
-		$results = $app->triggerEvent(
-			'onContentAfterDisplay',
-			['com_users.user', &$this->user, &$this->user->params, 0]
-		);
-		$this->displayEvent->afterDisplayContent = trim(implode("\n", $results));
+			$this->displayEvent->{$resultKey} = $results ? trim(implode("\n", $results)) : '';
+		}
 
 		$this->permissions->set('can_edit', $this->currentUser->authorise('core.edit', 'com_users'));
 		$this->permissions->set('can_delete', $this->currentUser->authorise('core.delete', 'com_users'));

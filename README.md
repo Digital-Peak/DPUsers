@@ -2,7 +2,7 @@
 This is the official DPUsers Github repository. DPUsers is a tiny Joomla user list extension which provides front end lists with comprehensive filtering for user groups.
 
 ## PREREQUISITS
-- Joomla 4.4
+- Joomla 5.4
 - mysql >= 8.0.0
 - PHP >= 8.1.0
 
